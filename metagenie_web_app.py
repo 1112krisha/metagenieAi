@@ -5,6 +5,7 @@ import io
 
 # --- Helper functions to generate globally realistic synthetic data ---
 def generate_value_for_column(col):
+    col = col.strip().lower()
     if col == "compound_name":
         return random.choice(["Butyrate", "Propionate", "Acetate", "Lactate", "Succinate"])
     elif col == "metabolite_id":
@@ -17,44 +18,38 @@ def generate_value_for_column(col):
         return random.choice(["Short-chain fatty acid", "Amino acid", "Bile acid"])
     elif col == "origin":
         return random.choice(["Microbial", "Host", "Dietary"])
-    elif col == "microbial_taxa" or col == "Linked microbial taxa":
+    elif col in ["microbial_taxa", "linked microbial taxa"]:
         return random.choice(["Firmicutes", "Bacteroidetes", "Actinobacteria", "Proteobacteria"])
     elif col == "species":
-        return random.choice(["E. coli", "B. fragilis", "L. acidophilus", "B. longum", "C. difficile"])
+        return random.choice(["Bacteroides fragilis", "Lactobacillus rhamnosus", "Faecalibacterium prausnitzii"])
     elif col == "strain":
-        return random.choice(["K12", "NCTC 9343", "VPI 10463", "DSM 20016", "JCM 1002"])
+        return random.choice(["ATCC 25285", "DSM 20021", "NCIMB 11181"])
     elif col == "sample_type":
-        return random.choice(["Stool", "Serum", "Urine", "Feces"])
+        return random.choice(["Stool", "Serum", "Urine"])
     elif col == "host_interaction":
-        return random.choice(["Anti-inflammatory", "Immunomodulatory", "Neutral", "Pro-inflammatory"])
-    elif col == "Description":
+        return random.choice(["Anti-inflammatory", "Immunomodulatory", "None"])
+    elif col == "description":
         return random.choice(["A key SCFA produced by microbial fermentation.", "Impacts immune response.", "Linked to gut health."])
     elif col == "disease_association":
-        return random.choice(["IBD", "Obesity", "Type 2 Diabetes", "Metabolic Syndrome", "None"])
+        return random.choice(["IBD", "Obesity", "Type 2 Diabetes", "None"])
     elif col == "pathway":
-        return random.choice(["Fermentation", "Glycolysis", "TCA Cycle", "Beta-oxidation"])
+        return random.choice(["Fermentation", "Glycolysis", "TCA Cycle", "Beta Oxidation"])
     elif col == "influenced_by_diet":
         return random.choice(["Yes", "No"])
     elif col == "host_genes":
-        return random.choice(["MC4R", "FTO", "SLC2A2", "LEP", "PPARG", "TCF7L2", "ADIPOQ"])
-    elif col == "SNPs_linked_to_metabolism":
-        return random.choice(["rs13266634", "rs9939609", "rs7903146", "rs1801282", "rs1205"])
+        return random.choice(["SLC5A8", "GPR43", "FFAR2", "NOD2", "TLR4"])
+    elif col == "snps_linked_to_metabolism":
+        return random.choice(["rs123456", "rs789012", "rs345678", "rs654321"])
     elif col == "rda_value":
         return round(random.uniform(0.1, 5.0), 2)
-    elif col == "RDA Reference Unit":
+    elif col == "rda reference unit":
         return random.choice(["mg/day", "ug/day"])
-    elif col == "Diversity Marker":
-        return random.choice([
-            "Balanced",
-            "Unbalanced: Decreased microbial richness",
-            "Unbalanced: Increased Firmicutes to Bacteroidetes ratio",
-            "Low diversity",
-            "High diversity"
-        ])
-    elif col == "Publication or database link":
+    elif col == "diversity marker":
+        return random.choice(["Balanced", "Unbalanced (low taxa diversity)", "Unbalanced (dominant species)", "Unbalanced due to antibiotics"])
+    elif col == "publication or database link":
         return f"https://doi.org/10.{random.randint(1000,9999)}/{random.randint(10000,99999)}"
-    elif col == "LC-MS/MS data reference":
-        return f"https://metabolomicsworkbench.org/data/DRCCMetadata.php?StudyID=ST{random.randint(100,999)}"
+    elif col == "lc-ms/ms data reference":
+        return f"https://massive.ucsd.edu/MSV{random.randint(100000,999999)}"
     else:
         return "N/A"
 
@@ -83,7 +78,7 @@ if uploaded_file:
 
     result_df = pd.DataFrame(synthetic_data)
 
-    st.success("\u2705 Data generation complete!")
+    st.success("✅ Data generation complete!")
     st.dataframe(result_df.head(100))
 
     output = io.BytesIO()
@@ -91,7 +86,7 @@ if uploaded_file:
         result_df.to_excel(writer, index=False)
 
     st.download_button(
-        label="📅 Download Synthetic Metabolite Data",
+        label="📥 Download Synthetic Metabolite Data",
         data=output.getvalue(),
         file_name="MetaGenie_Synthetic_Global_Metabolites.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
