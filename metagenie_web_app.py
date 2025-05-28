@@ -73,7 +73,8 @@ if uploaded_file:
     for _ in range(num_rows):
         row = {}
         for col in final_columns:
-            row[col] = generate_value_for_column(col)
+            normalized_col = col.strip().lower()
+            row[col] = generate_value_for_column(normalized_col)
         synthetic_data.append(row)
 
     result_df = pd.DataFrame(synthetic_data)
